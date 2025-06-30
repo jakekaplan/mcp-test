@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# CDK
+.cdk.staging/
+cdk.out/
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+*.cover
+coverage.xml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+.claude/
+.envrc.private
