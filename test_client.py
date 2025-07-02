@@ -4,7 +4,6 @@ import asyncio
 from fastmcp.client import Client
 from fastmcp.client.transports import StreamableHttpTransport
 from fastmcp.client.elicitation import ElicitResult
-from fastmcp.exceptions import ToolError
 from fastmcp.client.sampling import RequestContext, SamplingMessage, SamplingParams
 
 SERVER_URL = os.environ.get("TEST_MCP_SERVER_URL", "http://localhost:8000/mcp/")
