@@ -9,7 +9,6 @@ from fastmcp.client.sampling import RequestContext, SamplingMessage, SamplingPar
 SERVER_URL = os.environ.get("TEST_MCP_SERVER_URL", "http://localhost:8000/mcp/")
 
 
-@pytest.mark.asyncio
 async def test_ping_http():
     """Test basic connectivity with HTTP transport."""
     async with Client(
@@ -19,7 +18,6 @@ async def test_ping_http():
         assert result is True
 
 
-@pytest.mark.asyncio
 async def test_list_tools():
     """Test listing available tools."""
     async with Client(
@@ -39,7 +37,6 @@ async def test_list_tools():
         assert add_tool.description == "Add two numbers"
 
 
-@pytest.mark.asyncio
 async def test_call_add_tool():
     """Test calling the add tool."""
     async with Client(
@@ -52,7 +49,6 @@ async def test_call_add_tool():
         assert result.content[0].text == "8"
 
 
-@pytest.mark.asyncio
 async def test_call_multiply_tool():
     """Test calling the multiply tool."""
     async with Client(
@@ -64,7 +60,6 @@ async def test_call_multiply_tool():
         assert result.content[0].text == "28"
 
 
-@pytest.mark.asyncio
 async def test_call_greet_tool():
     """Test calling the greet tool."""
     async with Client(
@@ -76,7 +71,6 @@ async def test_call_greet_tool():
         assert result.content[0].text == "Hello, FastMCP!"
 
 
-@pytest.mark.asyncio
 async def test_call_echo_tool():
     """Test calling the echo tool."""
     async with Client(
@@ -89,7 +83,6 @@ async def test_call_echo_tool():
         assert result.content[0].text == test_message
 
 
-@pytest.mark.asyncio
 async def test_multiple_sequential_calls():
     """Test making multiple sequential tool calls."""
     async with Client(
@@ -108,7 +101,6 @@ async def test_multiple_sequential_calls():
         assert result3.content[0].text == "Hello, World!"
 
 
-@pytest.mark.asyncio
 async def test_concurrent_calls():
     """Test making concurrent tool calls."""
     async with Client(
@@ -129,7 +121,6 @@ async def test_concurrent_calls():
             assert result.content[0].text == expected
 
 
-@pytest.mark.asyncio
 async def test_list_resources():
     """Test listing available resources."""
     async with Client(
@@ -142,7 +133,6 @@ async def test_list_resources():
         assert "message://hello" in resource_uris
 
 
-@pytest.mark.asyncio
 async def test_read_resource():
     """Test reading a resource."""
     async with Client(
@@ -155,7 +145,6 @@ async def test_read_resource():
         assert result[0].text == "Hello from the resource!"
 
 
-@pytest.mark.asyncio
 async def test_list_prompts():
     """Test listing available prompts."""
     async with Client(
@@ -173,7 +162,6 @@ async def test_list_prompts():
         assert greeting_prompt.description == "Generate a greeting prompt"
 
 
-@pytest.mark.asyncio
 async def test_get_prompt():
     """Test getting a prompt with arguments."""
     async with Client(
@@ -194,7 +182,31 @@ async def test_get_prompt():
         assert "Please add the numbers 10 and 20" in result.messages[0].content.text
 
 
-@pytest.mark.asyncio
+async def test_progress():
+    """Test progress reporting functionality."""
+    progress_messages = []
+
+    async def progress_handler(progress, total, message):
+        progress_messages.append({
+            "progress": progress,
+            "total": total,
+            "message": message
+        })
+
+    async with Client(
+            transport=StreamableHttpTransport(SERVER_URL),
+            progress_handler=progress_handler
+    ) as client:
+        result = await client.call_tool("progress_tool", {})
+        assert result.content[0].text == "100"
+
+        # Verify progress messages
+        assert len(progress_messages) == 3
+        assert progress_messages[0] == {"progress": 1, "total": 3, "message": "33.33% complete"}
+        assert progress_messages[1] == {"progress": 2, "total": 3, "message": "66.67% complete"}
+        assert progress_messages[2] == {"progress": 3, "total": 3, "message": "100.00% complete"}
+
+
 async def test_elicitation_accept_content():
     """Test basic elicitation functionality."""
     async def elicitation_handler(message, response_type, params, ctx):
@@ -209,7 +221,6 @@ async def test_elicitation_accept_content():
         assert result.content[0].text == "Hello, Alice!"
 
 
-@pytest.mark.asyncio
 async def test_elicitation_decline():
     """Test that elicitation handler receives correct parameters."""
     async def elicitation_handler(message, response_type, params, ctx):
@@ -223,33 +234,6 @@ async def test_elicitation_decline():
         assert result.content[0].text == "No name provided."
 
 
-@pytest.mark.asyncio
-async def test_progress():
-    """Test progress reporting functionality."""
-    progress_messages = []
-    
-    async def progress_handler(progress, total, message):
-        progress_messages.append({
-            "progress": progress,
-            "total": total,
-            "message": message
-        })
-    
-    async with Client(
-        transport=StreamableHttpTransport(SERVER_URL),
-        progress_handler=progress_handler
-    ) as client:
-        result = await client.call_tool("progress_tool", {})
-        assert result.content[0].text == "100"
-        
-        # Verify progress messages
-        assert len(progress_messages) == 3
-        assert progress_messages[0] == {"progress": 1, "total": 3, "message": "33.33% complete"}
-        assert progress_messages[1] == {"progress": 2, "total": 3, "message": "66.67% complete"}
-        assert progress_messages[2] == {"progress": 3, "total": 3, "message": "100.00% complete"}
-
-
-@pytest.mark.asyncio
 async def test_sampling():
     """Test sampling functionality."""
     def sampling_handler(

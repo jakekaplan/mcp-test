@@ -4,7 +4,7 @@ from typing import Annotated, cast
 from dataclasses import dataclass
 from mcp.types import TextContent
 
-mcp = FastMCP("Demo 🚀")
+mcp = FastMCP("Integration Tests 🚀")
 
 @mcp.tool
 def add(a: int, b: int) -> int:
