@@ -1,5 +1,4 @@
 import os
-import pytest
 import asyncio
 from fastmcp.client import Client
 from fastmcp.client.transports import StreamableHttpTransport
@@ -210,7 +209,6 @@ async def test_progress():
 async def test_elicitation_accept_content():
     """Test basic elicitation functionality."""
     async def elicitation_handler(message, response_type, params, ctx):
-        # Mock user providing their name
         return ElicitResult(action="accept", content=response_type(name="Alice"))
 
     async with Client(

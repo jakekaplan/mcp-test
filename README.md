@@ -14,7 +14,7 @@ This project tests basic MCP (Model Context Protocol) functionality using FastMC
 ## Running the Server
 
 ```bash
-uv run main.py
+uv run test_server.py
 ```
 
 The server runs on `http://localhost:8000/mcp/` by default.

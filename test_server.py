@@ -1,5 +1,6 @@
 from fastmcp import FastMCP
 from fastmcp import Context
+from fastmcp import settings
 from typing import Annotated, cast
 from dataclasses import dataclass
 from mcp.types import TextContent
@@ -79,4 +80,5 @@ async def simple_sample(message: str, context: Context) -> str:
     return cast(TextContent, result).text
 
 if __name__ == '__main__':
+    settings.stateless_http = True
     mcp.run(transport="streamable-http")
