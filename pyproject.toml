@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastmcp>=2.10.1",
+    "fastmcp @ git+https://github.com/jlowin/fastmcp.git@e845b56a349adc9610aedad1e62eec3f6de31234",
 ]
 
 [project.optional-dependencies]
