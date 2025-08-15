@@ -79,6 +79,8 @@ async def simple_sample(message: str, context: Context) -> str:
     result = await context.sample("Hello, world!")
     return cast(TextContent, result).text
 
+mcp = FastMCP("Integration Tests 🚀")
+
+
 if __name__ == '__main__':
-    settings.stateless_http = True
-    mcp.run(transport="streamable-http")
+    mcp.run(transport="stdio")
