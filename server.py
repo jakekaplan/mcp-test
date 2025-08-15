@@ -78,8 +78,6 @@ async def simple_sample(message: str, context: Context) -> str:
     result = await context.sample("Hello, world!")
     return cast(TextContent, result).text
 
-mcp = FastMCP("Integration Tests 🚀")
-
 
 if __name__ == '__main__':
     mcp.run(transport="stdio")
