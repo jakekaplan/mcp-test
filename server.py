@@ -1,6 +1,5 @@
 from fastmcp import FastMCP
 from fastmcp import Context
-from fastmcp import settings
 from typing import Annotated, cast
 from dataclasses import dataclass
 from mcp.types import TextContent
