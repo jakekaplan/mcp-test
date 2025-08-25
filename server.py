@@ -1,3 +1,5 @@
+import os
+import json
 from fastmcp import FastMCP
 from fastmcp import Context
 from typing import Annotated, cast
@@ -5,6 +7,11 @@ from dataclasses import dataclass
 from mcp.types import TextContent
 
 mcp = FastMCP("Integration Tests 🚀")
+
+@mcp.tool
+def env() -> dict[str, str]:
+    """Get the env"""
+    return {k: v for k, v in os.environ.items()}
 
 @mcp.tool
 def add(a: int, b: int) -> int:
@@ -80,4 +87,4 @@ async def simple_sample(message: str, context: Context) -> str:
 
 
 if __name__ == '__main__':
-    mcp.run(transport="stdio")
+    mcp.run(transport="streamable-http")
