@@ -87,5 +87,5 @@ async def simple_sample(message: str, context: Context) -> str:
 
 
 if __name__ == '__main__':
-    #comment
+    #comment 2
     mcp.run(transport="streamable-http")
