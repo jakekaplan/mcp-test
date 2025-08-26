@@ -17,7 +17,7 @@ def env() -> dict[str, str]:
 @mcp.tool
 def sleep(n: int) -> int:
     """sleep for the number of seconds"""
-    for i n range(n):
+    for i in range(n):
         print(i)
         time.sleep(1)
 
