@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from fastmcp import FastMCP
 from fastmcp import Context
 from typing import Annotated, cast
@@ -12,6 +13,12 @@ mcp = FastMCP("Integration Tests 🚀")
 def env() -> dict[str, str]:
     """Get the env"""
     return {k: v for k, v in os.environ.items()}
+
+@mcp.tool
+def sleep(n: int) -> int:
+    """sleep for the number of seconds"""
+    time.sleep(n)
+    return n + 1
 
 @mcp.tool
 def add(a: int, b: int) -> int:
