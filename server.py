@@ -7,8 +7,6 @@ from typing import Annotated, cast
 from dataclasses import dataclass
 from mcp.types import TextContent
 
-import kjasndfjksandf
-
 mcp = FastMCP("Integration Tests 🚀")
 
 @mcp.tool
