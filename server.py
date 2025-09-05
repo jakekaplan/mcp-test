@@ -7,6 +7,7 @@ from fastmcp import Context
 from typing import Annotated, cast
 from dataclasses import dataclass
 from mcp.types import TextContent
+import pandas as pd
 
 mcp = FastMCP("Integration Tests 🚀")
 
