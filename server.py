@@ -1,5 +1,4 @@
 import os
-import json
 import time
 import fastmcp
 from fastmcp import FastMCP
@@ -8,27 +7,16 @@ from typing import Annotated, cast
 from dataclasses import dataclass
 from mcp.types import TextContent
 import pandas as pd
+import importlib.metadata as md
 
 mcp = FastMCP("Integration Tests 🚀")
 
-@mcp.tool
-def env() -> dict[str, str]:
-    """Get the env"""
-    return {k: v for k, v in os.environ.items()}
+
 
 @mcp.tool
-def version() -> str:
-    """Get the fastmcp version"""
-    return fastmcp.__version__
-
-@mcp.tool
-def sleep(n: int) -> int:
-    """sleep for the number of seconds"""
-    for i in range(n):
-        print(i)
-        time.sleep(1)
-
-    return n + 1
+def echo(message: str) -> str:
+    """Echo back a message"""
+    return message
 
 @mcp.tool
 def add(a: int, b: int) -> int:
@@ -36,73 +24,25 @@ def add(a: int, b: int) -> int:
     return a + b
 
 @mcp.tool
-def multiply(a: int, b: int) -> int:
-    """Multiply two numbers"""
-    return a * b
+def version() -> str:
+    """Get the fastmcp version"""
+    return fastmcp.__version__
 
 @mcp.tool
-def greet(name: str) -> str:
-    """Greet someone by name"""
-    return f"Hello, {name}!"
+def env() -> dict[str, str]:
+    """Get the env"""
+    return {k: v for k, v in os.environ.items()}
 
 @mcp.tool
-def echo(message: str) -> str:
-    """Echo back a message"""
-    return message
-
-@mcp.resource("message://hello")
-def hello_message() -> str:
-    """A simple hello message resource"""
-    return "Hello from the resource!"
-
-@mcp.prompt
-def greeting_prompt(name: Annotated[str, "Name to greet"]) -> str:
-    """Generate a greeting prompt"""
-    return f"Please greet {name} in a friendly way"
-
-@mcp.prompt
-def math_prompt(
-    operation: Annotated[str, "Operation to perform (add/multiply)"],
-    x: Annotated[int, "First number"],
-    y: Annotated[int, "Second number"]
-) -> str:
-    """Generate a math operation prompt"""
-    return f"Please {operation} the numbers {x} and {y}"
-
-@dataclass
-class Person:
-    name: str
-
-@mcp.tool
-async def ask_for_name(context: Context) -> str:
-    """Ask for user's name using elicitation"""
-    result = await context.elicit(
-        message="What is your name?",
-        response_type=Person,
-    )
-    if result.action == "accept":
-        return f"Hello, {result.data.name}!"
-    else:
-        return "No name provided."
-
-@mcp.tool
-async def progress_tool(context: Context) -> int:
-    """Tool that reports progress"""
-    for i in range(3):
-        await context.report_progress(
-            progress=i + 1,
-            total=3,
-            message=f"{(i + 1) / 3 * 100:.2f}% complete"
-        )
-    return 100
-
-@mcp.tool
-async def simple_sample(message: str, context: Context) -> str:
-    """Simple sampling tool"""
-    result = await context.sample("Hello, world!")
-    return cast(TextContent, result).text
-
+def pkg_versions() -> list[str]:
+    """List installed Python packages and versions"""
+    entries: list[str] = []
+    for dist in md.distributions():
+        name = dist.metadata.get("Name", "unknown")
+        version = dist.version
+        entries.append(f"{name}=={version}")
+    entries.sort(key=lambda s: s.lower())
+    return entries
 
 if __name__ == '__main__':
-    #comment
     mcp.run(transport="streamable-http")
