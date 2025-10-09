@@ -44,5 +44,16 @@ def pkg_versions() -> list[str]:
     entries.sort(key=lambda s: s.lower())
     return entries
 
+@mcp.resource("substack://notes-extractor")
+def extended_substack_notes_extractor() -> str:
+    """Browser script to extract all historical Substack notes with detailed stats as JSON"""
+    return """# Substack Notes Extractor - Browser Script
+
+The Substack Notes Extractor is a browser-based JavaScript tool that extracts all your historical Substack notes with comprehensive performance metrics. 
+
+**Get the script:** https://github.com/aboyalejandro/substack-notes-extractor/blob/main/get_notes.js
+
+"""
+
 if __name__ == '__main__':
     mcp.run(transport="streamable-http")
