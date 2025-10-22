@@ -2,7 +2,7 @@ import time
 s = time.time()
 from fastmcp import FastMCP
 e = time.time()
-print("IMPORT TOOK: e-s")
+print(f"IMPORT TOOK: {e-s}")
 
 import os
 
