@@ -1,7 +1,13 @@
-import os
 import time
-import fastmcp
+s = time.time()
 from fastmcp import FastMCP
+e = time.time()
+print("IMPORT TOOK: e-s")
+
+import os
+
+import fastmcp
+
 from fastmcp import Context
 from typing import Annotated, cast
 from dataclasses import dataclass
