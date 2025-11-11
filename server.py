@@ -35,6 +35,11 @@ def version() -> str:
     return fastmcp.__version__
 
 @mcp.tool
+def error() -> str:
+    """Raise an error"""
+    raise ValueError("It's all going wrong!!!")
+
+@mcp.tool
 def env() -> dict[str, str]:
     """Get the env"""
     return {k: v for k, v in os.environ.items()}
