@@ -1,22 +1,10 @@
-import time
-s = time.time()
-from fastmcp import FastMCP
-e = time.time()
-print(f"IMPORT TOOK: {e-s}")
-
 import os
 
 import fastmcp
-
-from fastmcp import Context
-from typing import Annotated, cast
-from dataclasses import dataclass
-from mcp.types import TextContent
-import pandas as pd
+from fastmcp import FastMCP
 import importlib.metadata as md
 
-mcp = FastMCP("Integration Tests 🚀")
-
+mcp = FastMCP("Jake's Test Server 🚀")
 
 
 @mcp.tool
