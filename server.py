@@ -1,4 +1,5 @@
 import os
+import time
 
 import fastmcp
 from fastmcp import FastMCP
@@ -31,6 +32,12 @@ def error() -> str:
 def env() -> dict[str, str]:
     """Get the env"""
     return {k: v for k, v in os.environ.items()}
+
+@mcp.tool
+def sleep() -> dict[str, str]:
+    """Sleep forever"""
+    while True:
+        time.sleep(1)
 
 @mcp.tool
 def pkg_versions() -> list[str]:
