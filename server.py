@@ -1,6 +1,7 @@
 import os
 import time
 
+import httpx
 import fastmcp
 from fastmcp import FastMCP
 import importlib.metadata as md
@@ -49,6 +50,13 @@ def pkg_versions() -> list[str]:
         entries.append(f"{name}=={version}")
     entries.sort(key=lambda s: s.lower())
     return entries
+
+
+@mcp.tool
+def ping_remote() -> dict:
+    """Ping the ngrok endpoint"""
+    response = httpx.get("https://semipreserved-jack-nontyrannously.ngrok-free.dev")
+    return {"status_code": response.status_code, "text": response.text}
 
 
 if __name__ == '__main__':
