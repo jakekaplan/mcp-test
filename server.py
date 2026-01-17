@@ -7,12 +7,7 @@ from fastmcp import FastMCP
 from mcp.types import Icon
 import importlib.metadata as md
 
-mcp = FastMCP("Jake's Test Server 🚀",
-              icons=[Icon(
-                src="https://icons.veryicon.com/png/o/miscellaneous/logo-design-of-lingzhuyun/icon-correct-24-1.png",
-                )
-              ],
-              )
+mcp = FastMCP("Jake's Test Server 🚀")
 
 
 @mcp.tool
