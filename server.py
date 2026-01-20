@@ -60,5 +60,23 @@ def ping_remote() -> dict:
     return {"status_code": response.status_code, "text": response.text}
 
 
+@mcp.prompt
+def greeting(name: str) -> str:
+    """Generate a greeting prompt"""
+    return f"Please greet {name} in a friendly and enthusiastic way."
+
+
+@mcp.resource("config://app")
+def get_app_config() -> str:
+    """Get the application configuration"""
+    return "app_name: Jake's Test Server\nversion: 1.0.0\ndebug: true"
+
+
+@mcp.resource("users://{user_id}/profile")
+def get_user_profile(user_id: str) -> str:
+    """Get a user's profile by ID"""
+    return f"user_id: {user_id}\nname: User {user_id}\nemail: user{user_id}@example.com"
+
+
 if __name__ == '__main__':
     mcp.run(transport="streamable-http")
