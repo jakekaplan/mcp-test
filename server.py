@@ -1,11 +1,12 @@
+import asyncio
+import importlib.metadata as md
 import os
 import time
 
-import httpx
 import fastmcp
-from fastmcp import FastMCP
+import httpx
+from fastmcp import Context, FastMCP
 from mcp.types import Icon
-import importlib.metadata as md
 
 mcp = FastMCP("Jake's Test Server 🚀")
 
@@ -40,6 +41,30 @@ def sleep() -> dict[str, str]:
     """Sleep forever"""
     while True:
         time.sleep(1)
+
+
+@mcp.tool
+async def stream_progress_demo(
+    ctx: Context,
+    steps: int = 8,
+    delay_seconds: float = 0.75,
+    fail_at: int | None = None,
+) -> dict[str, str]:
+    """Emit progress and log notifications over time for streaming tests."""
+    await ctx.info(f"starting stream test: steps={steps}, delay={delay_seconds}s")
+
+    for step in range(1, steps + 1):
+        await asyncio.sleep(delay_seconds)
+        await ctx.report_progress(step, steps, f"step {step}/{steps}")
+        await ctx.info(f"heartbeat {step}/{steps}")
+
+        if fail_at is not None and step == fail_at:
+            await ctx.error(f"intentional failure at step {step}")
+            raise RuntimeError(f"intentional failure at step {step}")
+
+    await ctx.info("stream test complete")
+    return {"status": "ok"}
+
 
 @mcp.tool
 def pkg_versions() -> list[str]:
