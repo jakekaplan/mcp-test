@@ -2,13 +2,38 @@ import asyncio
 import importlib.metadata as md
 import os
 import time
+from json import JSONDecodeError
 
 import fastmcp
 import httpx
 from fastmcp import Context, FastMCP
 from mcp.types import Icon
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
 
 mcp = FastMCP("Jake's Test Server 🚀")
+
+
+@mcp.custom_route("/test", methods=["GET", "POST"])
+async def test_route(request: Request) -> Response:
+    payload = None
+
+    if request.method == "POST":
+        try:
+            payload = await request.json()
+        except JSONDecodeError:
+            payload = {"raw": (await request.body()).decode("utf-8", errors="replace")}
+
+    return JSONResponse(
+        {
+            "status": "ok",
+            "service": "Jake's Test Server 🚀",
+            "method": request.method,
+            "request_id": request.headers.get("x-request-id"),
+            "query_params": dict(request.query_params),
+            "payload": payload,
+        }
+    )
 
 
 @mcp.tool
