@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "fastmcp>=3.0.0",
     "pandas",
+    "adsfnasjdnfasdf"
 ]
 
 [project.optional-dependencies]
