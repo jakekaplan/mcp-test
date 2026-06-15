@@ -1,13 +1,11 @@
-import asyncio
 import importlib.metadata as md
 import os
 import time
 from json import JSONDecodeError
 
 import fastmcp
-import httpx
-from fastmcp import Context, FastMCP
-from mcp.types import Icon
+from fastmcp import FastMCP
+from fastmcp.server.dependencies import get_http_headers
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
@@ -62,33 +60,15 @@ def env() -> dict[str, str]:
     return {k: v for k, v in os.environ.items()}
 
 @mcp.tool
+def get_headers() -> dict[str, str]:
+    """Get all HTTP headers for the current request"""
+    return get_http_headers(include_all=True)
+
+@mcp.tool
 def sleep() -> dict[str, str]:
     """Sleep forever"""
     while True:
         time.sleep(1)
-
-
-@mcp.tool
-async def stream_progress_demo(
-    ctx: Context,
-    steps: int = 8,
-    delay_seconds: float = 0.75,
-    fail_at: int | None = None,
-) -> dict[str, str]:
-    """Emit progress and log notifications over time for streaming tests."""
-    await ctx.info(f"starting stream test: steps={steps}, delay={delay_seconds}s")
-
-    for step in range(1, steps + 1):
-        await asyncio.sleep(delay_seconds)
-        await ctx.report_progress(step, steps, f"step {step}/{steps}")
-        await ctx.info(f"heartbeat {step}/{steps}")
-
-        if fail_at is not None and step == fail_at:
-            await ctx.error(f"intentional failure at step {step}")
-            raise RuntimeError(f"intentional failure at step {step}")
-
-    await ctx.info("stream test complete")
-    return {"status": "ok"}
 
 
 @mcp.tool
@@ -101,13 +81,6 @@ def pkg_versions() -> list[str]:
         entries.append(f"{name}=={version}")
     entries.sort(key=lambda s: s.lower())
     return entries
-
-
-@mcp.tool
-def ping_remote() -> dict:
-    """Ping the ngrok endpoint"""
-    response = httpx.get("https://semipreserved-jack-nontyrannously.ngrok-free.dev")
-    return {"status_code": response.status_code, "text": response.text}
 
 
 @mcp.prompt
