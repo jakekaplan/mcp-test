@@ -39,6 +39,13 @@ def echo(message: str) -> str:
     """Echo back a message"""
     return message
 
+
+@mcp.tool
+def random() -> str:
+    """Return a test string"""
+    return "test"
+
+
 @mcp.tool
 def add(a: int, b: int) -> int:
     """Add two numbers"""
