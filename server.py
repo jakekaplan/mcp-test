@@ -39,6 +39,13 @@ def echo(message: str) -> str:
     """Echo back a message"""
     return message
 
+
+@mcp.tool
+def clown_car_tool() -> str:
+    """Return a clown."""
+    return "clown"
+
+
 @mcp.tool
 def add(a: int, b: int) -> int:
     """Add two numbers"""
