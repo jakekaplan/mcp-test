@@ -43,6 +43,11 @@ def echo(message: str) -> str:
     """Echo back a message"""
     return message
 
+@mcp.tool(tags={"demo", "large-output", "text"})
+def big_result(n: int) -> str:
+    """Return a potentially very large string made by repeating “bigtool” n times: bigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtool. Use this tool to exercise clients with a sizeable text result, test long tool descriptions, inspect wrapping and truncation behavior, and confirm that large MCP tool responses remain usable when the requested repetition count grows."""
+    return "bigtool" * n
+
 @mcp.tool(
     tags={"demo", "math"},
     annotations=ToolAnnotations(title="Add Numbers", idempotentHint=True),
