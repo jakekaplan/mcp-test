@@ -2,6 +2,7 @@ import importlib.metadata as md
 import os
 import time
 from json import JSONDecodeError
+from uuid import uuid4
 
 import fastmcp
 from fastmcp import Context, FastMCP
@@ -9,6 +10,7 @@ from fastmcp.server.dependencies import get_http_headers
 from mcp.types import (
     ElicitRequest,
     ElicitRequestFormParams,
+    ElicitRequestURLParams,
     ElicitResult,
     InputRequiredResult,
     ToolAnnotations,
@@ -74,8 +76,8 @@ def echo_v2(message: str) -> str:
 
 
 @mcp.tool(app=True, tags={"app", "demo"})
-def greeting_card(name: str = "Inspector") -> Column:
-    """Render a simple greeting card as an MCP App."""
+def mcp_app(name: str) -> Column:
+    """Render a simple Prefab MCP App."""
     with Column(gap=3, css_class="p-8") as card:
         Heading(f"Hello, {name}!")
         Muted("Rendered as an MCP App using Prefab.")
@@ -83,9 +85,9 @@ def greeting_card(name: str = "Inspector") -> Column:
     return card
 
 
-@mcp.tool(tags={"demo", "elicitation"})
-async def introduce_yourself(ctx: Context) -> str | InputRequiredResult:
-    """Ask the user for an introduction using modern MCP elicitation."""
+@mcp.tool(tags={"demo", "elicitation", "form"})
+async def form_elicitation(ctx: Context) -> str | InputRequiredResult:
+    """Demonstrate modern form-mode MCP elicitation."""
     responses = ctx.input_responses
     if responses is None or "introduction" not in responses:
         return InputRequiredResult(
@@ -125,10 +127,35 @@ async def introduce_yourself(ctx: Context) -> str | InputRequiredResult:
     return f"Nice to meet you, {name}! You're feeling {mood}."
 
 
-@mcp.tool(tags={"demo", "large-output", "text"})
-def big_result(n: int) -> str:
-    """Return a potentially very large string made by repeating “bigtool” n times: bigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtoolbigtool. Use this tool to exercise clients with a sizeable text result, test long tool descriptions, inspect wrapping and truncation behavior, and confirm that large MCP tool responses remain usable when the requested repetition count grows."""
-    return "bigtool" * n
+@mcp.tool(tags={"demo", "elicitation", "url"})
+async def url_elicitation(ctx: Context) -> str | InputRequiredResult:
+    """Demonstrate modern URL-mode MCP elicitation with a fake URL."""
+    responses = ctx.input_responses
+    if responses is None or "open_url" not in responses:
+        flow_id = str(uuid4())
+        return InputRequiredResult(
+            input_requests={
+                "open_url": ElicitRequest(
+                    params=ElicitRequestURLParams(
+                        message="Open a fake URL to test URL elicitation.",
+                        url=(
+                            "https://example.invalid/mcp-url-elicitation"
+                            f"?flow={flow_id}"
+                        ),
+                        elicitationId=flow_id,
+                    )
+                )
+            },
+            request_state=flow_id,
+        )
+
+    answer = responses["open_url"]
+    if not isinstance(answer, ElicitResult) or answer.action == "decline":
+        return "URL elicitation declined."
+    if answer.action == "cancel":
+        return "URL elicitation cancelled."
+
+    return f"URL elicitation accepted for demo flow {ctx.request_state}."
 
 
 @mcp.tool(
