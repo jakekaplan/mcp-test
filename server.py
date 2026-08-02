@@ -6,6 +6,7 @@ from json import JSONDecodeError
 import fastmcp
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import get_http_headers
+from mcp.types import ToolAnnotations
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
@@ -34,12 +35,18 @@ async def test_route(request: Request) -> Response:
     )
 
 
-@mcp.tool
+@mcp.tool(
+    tags={"demo", "text"},
+    annotations=ToolAnnotations(title="Echo Message", readOnlyHint=True),
+)
 def echo(message: str) -> str:
     """Echo back a message"""
     return message
 
-@mcp.tool
+@mcp.tool(
+    tags={"demo", "math"},
+    annotations=ToolAnnotations(title="Add Numbers", idempotentHint=True),
+)
 def add(a: int, b: int) -> int:
     """Add two numbers"""
     return a + b
@@ -49,7 +56,10 @@ def version() -> str:
     """Get the fastmcp version"""
     return fastmcp.__version__
 
-@mcp.tool
+@mcp.tool(
+    tags={"dangerous", "demo"},
+    annotations=ToolAnnotations(title="Raise an Error", destructiveHint=True),
+)
 def error() -> str:
     """Raise an error"""
     raise ValueError("It's all going wrong!!!")
@@ -71,7 +81,10 @@ def sleep() -> dict[str, str]:
         time.sleep(1)
 
 
-@mcp.tool
+@mcp.tool(
+    tags={"demo", "packages"},
+    annotations=ToolAnnotations(title="Package Versions", openWorldHint=True),
+)
 def pkg_versions() -> list[str]:
     """List installed Python packages and versions"""
     entries: list[str] = []
