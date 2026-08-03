@@ -2,7 +2,6 @@ import importlib.metadata as md
 import os
 import time
 from json import JSONDecodeError
-from uuid import uuid4
 
 import fastmcp
 from fastmcp import Context, FastMCP
@@ -132,21 +131,15 @@ async def url_elicitation(ctx: Context) -> str | InputRequiredResult:
     """Demonstrate modern URL-mode MCP elicitation with a fake URL."""
     responses = ctx.input_responses
     if responses is None or "open_url" not in responses:
-        flow_id = str(uuid4())
         return InputRequiredResult(
             input_requests={
                 "open_url": ElicitRequest(
                     params=ElicitRequestURLParams(
                         message="Open a fake URL to test URL elicitation.",
-                        url=(
-                            "https://example.invalid/mcp-url-elicitation"
-                            f"?flow={flow_id}"
-                        ),
-                        elicitationId=flow_id,
+                        url="https://example.invalid/mcp-url-elicitation",
                     )
                 )
-            },
-            request_state=flow_id,
+            }
         )
 
     answer = responses["open_url"]
@@ -155,7 +148,7 @@ async def url_elicitation(ctx: Context) -> str | InputRequiredResult:
     if answer.action == "cancel":
         return "URL elicitation cancelled."
 
-    return f"URL elicitation accepted for demo flow {ctx.request_state}."
+    return "URL elicitation accepted."
 
 
 @mcp.tool(
