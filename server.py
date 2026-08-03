@@ -86,44 +86,60 @@ def mcp_app(name: str) -> Column:
 
 @mcp.tool(tags={"demo", "elicitation", "form"})
 async def form_elicitation(ctx: Context) -> str | InputRequiredResult:
-    """Demonstrate modern form-mode MCP elicitation."""
+    """Customize a greeting using modern form-mode MCP elicitation."""
     responses = ctx.input_responses
-    if responses is None or "introduction" not in responses:
+    if responses is None or "greeting" not in responses:
         return InputRequiredResult(
             input_requests={
-                "introduction": ElicitRequest(
+                "greeting": ElicitRequest(
                     params=ElicitRequestFormParams(
-                        message="Tell the test server a little about yourself.",
+                        message="Customize the greeting this demo tool should return.",
                         requested_schema={
                             "type": "object",
                             "properties": {
                                 "name": {
                                     "type": "string",
-                                    "title": "Display name",
+                                    "title": "Who should be greeted?",
+                                    "description": "The name to use in the greeting.",
                                 },
-                                "mood": {
+                                "style": {
                                     "type": "string",
-                                    "title": "Current mood",
-                                    "enum": ["curious", "focused", "excited"],
-                                    "default": "curious",
+                                    "title": "Greeting style",
+                                    "description": "Choose the tone of the greeting.",
+                                    "enum": ["friendly", "formal", "enthusiastic"],
+                                    "default": "friendly",
+                                },
+                                "include_emoji": {
+                                    "type": "boolean",
+                                    "title": "Include an emoji?",
+                                    "description": "Add a waving-hand emoji to the greeting.",
+                                    "default": True,
                                 },
                             },
-                            "required": ["name", "mood"],
+                            "required": ["name"],
                         },
                     )
                 )
             }
         )
 
-    answer = responses["introduction"]
+    answer = responses["greeting"]
     if not isinstance(answer, ElicitResult) or answer.action == "decline":
-        return "Introduction declined."
+        return "Greeting customization declined."
     if answer.action == "cancel" or answer.content is None:
-        return "Introduction cancelled."
+        return "Greeting customization cancelled."
 
     name = str(answer.content["name"])
-    mood = str(answer.content["mood"])
-    return f"Nice to meet you, {name}! You're feeling {mood}."
+    style = str(answer.content.get("style", "friendly"))
+    greetings = {
+        "friendly": f"Hi, {name}! Great to meet you!",
+        "formal": f"Hello, {name}. It is a pleasure to meet you.",
+        "enthusiastic": f"Hey, {name}! It's fantastic to meet you!",
+    }
+    greeting = greetings.get(style, greetings["friendly"])
+    if answer.content.get("include_emoji", True):
+        greeting += " 👋"
+    return greeting
 
 
 @mcp.tool(tags={"demo", "elicitation", "url"})
