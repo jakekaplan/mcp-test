@@ -74,6 +74,12 @@ def echo_v2(message: str) -> str:
     return f"Echo v2: {message}"
 
 
+@mcp.tool
+def random() -> str:
+    """Return a test string."""
+    return "test"
+
+
 @mcp.tool(app=True, tags={"app", "demo"})
 def mcp_app(name: str) -> Column:
     """Render a simple Prefab MCP App."""
