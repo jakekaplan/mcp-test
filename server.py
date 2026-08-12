@@ -74,6 +74,12 @@ def echo_v2(message: str) -> str:
     return f"Echo v2: {message}"
 
 
+@mcp.tool(tags={"demo", "production"})
+def main_deployment_marker() -> str:
+    """Confirm that the latest main branch deployment is running."""
+    return "Main deployment is live."
+
+
 @mcp.tool(app=True, tags={"app", "demo"})
 def mcp_app(name: str) -> Column:
     """Render a simple Prefab MCP App."""
