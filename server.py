@@ -74,6 +74,12 @@ def echo_v2(message: str) -> str:
     return f"Echo v2: {message}"
 
 
+@mcp.tool(tags={"demo", "preview"})
+def pr_preview_marker() -> str:
+    """Confirm that the pull request preview is running."""
+    return "PR preview target is live."
+
+
 @mcp.tool(app=True, tags={"app", "demo"})
 def mcp_app(name: str) -> Column:
     """Render a simple Prefab MCP App."""
