@@ -80,6 +80,12 @@ def main_deployment_marker() -> str:
     return "Main deployment is live."
 
 
+@mcp.tool(tags={"demo", "preview"})
+def pr_preview_marker() -> str:
+    """Confirm that the latest pull request commit is running."""
+    return "Latest PR commit is live."
+
+
 @mcp.tool(app=True, tags={"app", "demo"})
 def mcp_app(name: str) -> Column:
     """Render a simple Prefab MCP App."""
