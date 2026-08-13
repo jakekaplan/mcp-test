@@ -80,6 +80,12 @@ def main_deployment_marker() -> str:
     return "Main deployment verified on 2026-08-13."
 
 
+@mcp.tool(tags={"demo", "preview"})
+def pr_lifecycle_probe() -> str:
+    """Confirm that the pull request preview lifecycle is running."""
+    return "PR lifecycle preview opened."
+
+
 @mcp.tool(app=True, tags={"app", "demo"})
 def mcp_app(name: str) -> Column:
     """Render a simple Prefab MCP App."""
