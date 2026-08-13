@@ -77,7 +77,7 @@ def echo_v2(message: str) -> str:
 @mcp.tool(tags={"demo", "production"})
 def main_deployment_marker() -> str:
     """Confirm that the latest main branch deployment is running."""
-    return "Main deployment is live."
+    return "Main deployment verified on 2026-08-13."
 
 
 @mcp.tool(app=True, tags={"app", "demo"})
