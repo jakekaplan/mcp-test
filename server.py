@@ -74,6 +74,32 @@ def echo_v2(message: str) -> str:
     return f"Echo v2: {message}"
 
 
+@mcp.tool(
+    tags={"demo", "text"},
+    annotations=ToolAnnotations(
+        title="Repeat Message",
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+    ),
+)
+def repeat_message(
+    message: str,
+    count: int = 1,
+    prefix: str | None = None,
+) -> list[str]:
+    """
+    Repeat a message and return each repetition as a list item.
+
+    Args:
+        message (str): The message to repeat.
+        count (int): The number of repetitions; defaults to 1.
+        prefix (str, optional): Text to prepend to each repetition.
+    """
+    repeated_message = f"{prefix}{message}" if prefix else message
+    return [repeated_message] * count
+
+
 @mcp.tool(tags={"demo", "production"})
 def main_deployment_marker() -> str:
     """Confirm that the latest main branch deployment is running."""
