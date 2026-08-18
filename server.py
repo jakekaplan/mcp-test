@@ -1,5 +1,6 @@
 import importlib.metadata as md
 import os
+import re
 import time
 from json import JSONDecodeError
 
@@ -74,36 +75,36 @@ def echo_v2(message: str) -> str:
     return f"Echo v2: {message}"
 
 
+MAX_RESPONSE_BYTES = 100 * 1024 * 1024
+_RESPONSE_SIZE_PATTERN = re.compile(r"^(\d+(?:\.\d+)?)\s*(b|kb|mb)$", re.IGNORECASE)
+
+
+def _parse_response_size(size: str) -> int:
+    match = _RESPONSE_SIZE_PATTERN.fullmatch(size.strip())
+    if match is None:
+        raise ValueError("Size must use B, KB, or MB, for example: 500B, 10KB, or 5MB")
+
+    amount, unit = match.groups()
+    multipliers = {"b": 1, "kb": 1024, "mb": 1024 * 1024}
+    byte_count = round(float(amount) * multipliers[unit.lower()])
+    if byte_count < 1:
+        raise ValueError("Size must be at least 1 byte")
+    if byte_count > MAX_RESPONSE_BYTES:
+        raise ValueError("Size must not exceed 100MB")
+    return byte_count
+
+
 @mcp.tool(
-    tags={"demo", "text"},
+    tags={"demo", "response-size"},
     annotations=ToolAnnotations(
-        title="Repeat Message",
+        title="Generate Sized Response",
         readOnlyHint=True,
-        destructiveHint=False,
         idempotentHint=True,
     ),
 )
-def repeat_message(
-    message: str,
-    count: int = 1,
-    prefix: str | None = None,
-) -> list[str]:
-    """
-    Repeat a message and return each repetition as a list item.
-
-    Args:
-        message (str): The message to repeat.
-        count (int): The number of repetitions; defaults to 1.
-        prefix (str, optional): Text to prepend to each repetition.
-    """
-    repeated_message = f"{prefix}{message}" if prefix else message
-    return [repeated_message] * count
-
-
-@mcp.tool(tags={"demo", "production"})
-def main_deployment_marker() -> str:
-    """Confirm that the latest main branch deployment is running."""
-    return "Main deployment verified on 2026-08-13."
+def generate_sized_response(size: str) -> str:
+    """Return an ASCII payload of the requested size, such as 10KB or 5MB."""
+    return "x" * _parse_response_size(size)
 
 
 @mcp.tool(app=True, tags={"app", "demo"})
