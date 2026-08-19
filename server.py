@@ -210,6 +210,12 @@ def add(a: int, b: int) -> int:
 
 
 @mcp.tool
+def test() -> str:
+    """Return the test string."""
+    return "test"
+
+
+@mcp.tool
 def version() -> str:
     """Get the fastmcp version"""
     return fastmcp.__version__
