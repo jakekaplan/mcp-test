@@ -19,9 +19,11 @@ from prefab_ui.components import Badge, Column, Heading, Muted
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
+DEPLOYMENT_PROBE = "server-1.0.6"
+
 mcp = FastMCP(
     name="Jake's Test Server 🚀",
-    version="1.0.5",
+    version="1.0.6",
     website_url="https://jakekaplan.dev/",
     instructions=(
         "Use this demo server to test MCP tools, resources, prompts, apps, "
@@ -45,6 +47,7 @@ async def test_route(request: Request) -> Response:
         {
             "status": "ok",
             "service": "Jake's Test Server 🚀",
+            "deployment_probe": DEPLOYMENT_PROBE,
             "method": request.method,
             "request_id": request.headers.get("x-request-id"),
             "query_params": dict(request.query_params),
