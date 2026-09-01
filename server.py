@@ -78,6 +78,12 @@ def echo_v2(message: str) -> str:
     return f"Echo v2: {message}"
 
 
+@mcp.tool(tags={"demo"})
+def ghost() -> str:
+    """Return a spooky greeting."""
+    return "boo!"
+
+
 MAX_RESPONSE_BYTES = 100 * 1024 * 1024
 _RESPONSE_SIZE_PATTERN = re.compile(r"^(\d+(?:\.\d+)?)\s*(b|kb|mb)$", re.IGNORECASE)
 
