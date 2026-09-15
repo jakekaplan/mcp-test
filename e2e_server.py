@@ -5,17 +5,15 @@ from typing import Literal
 
 from fastmcp import FastMCP
 
-_secret = os.environ.get("E2E_CHALLENGE_SECRET")
-if not _secret:
-    raise RuntimeError("E2E_CHALLENGE_SECRET must be set and nonempty")
-_secret = _secret.encode("utf-8")
-
 mcp = FastMCP(name="Agent Runtime E2E")
 
 
 def _challenge(run_id: str, phase: Literal["initial", "follow-up"]) -> str:
+    secret = os.environ.get("E2E_CHALLENGE_SECRET")
+    if not secret:
+        raise RuntimeError("E2E_CHALLENGE_SECRET must be set and nonempty")
     return hmac.new(
-        _secret, f"{run_id}:{phase}".encode("utf-8"), hashlib.sha256
+        secret.encode("utf-8"), f"{run_id}:{phase}".encode("utf-8"), hashlib.sha256
     ).hexdigest()[:24]
 
 
