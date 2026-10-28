@@ -3,10 +3,13 @@ import os
 import re
 import time
 from json import JSONDecodeError
+from pathlib import Path
 
 import fastmcp
 from fastmcp import Context, FastMCP
 from fastmcp.server.dependencies import get_http_headers
+from fastmcp.skills import Skill
+from fastmcp.skills.provider import SkillCatalogProvider
 from mcp.types import (
     ElicitRequest,
     ElicitRequestFormParams,
@@ -283,6 +286,25 @@ def get_app_config() -> str:
 def get_user_profile(user_id: str) -> str:
     """Get a user's profile by ID"""
     return f"user_id: {user_id}\nname: User {user_id}\nemail: user{user_id}@example.com"
+
+
+mcp.add_provider(
+    SkillCatalogProvider(
+        [
+            Skill.from_directory(Path(__file__).parent / "skills" / "server-tour"),
+            Skill(
+                name="greeting-style",
+                description="Write short, warm greetings. Use with the greeting prompt or form_elicitation tool.",
+                instructions=(
+                    "# Greeting style\n\n"
+                    "- Keep greetings to one sentence.\n"
+                    "- Use the person's name once.\n"
+                    "- Add at most one emoji, and only when the tone is friendly.\n"
+                ),
+            ),
+        ]
+    )
+)
 
 
 if __name__ == "__main__":

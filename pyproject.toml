@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastmcp[apps]>=4.0.0b1",
+    "fastmcp[apps]>=4.2.0a1",
     "pandas",
 ]
 
@@ -16,7 +16,7 @@ test = [
 ]
 
 [tool.uv]
-constraint-dependencies = ["fastmcp-slim>=4.0.0b1"]
+constraint-dependencies = ["fastmcp-slim>=4.2.0a1"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
